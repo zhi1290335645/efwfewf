@@ -1,14 +1,29 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Home from '../views/home'
+import Login from '../views/login'
+import ElementUI from 'element-ui' // 引入包
+import 'element-ui/lib/theme-chalk/index.css' // 引入样式
 
 Vue.use(VueRouter)
-
+Vue.use(ElementUI)
 const routes = [
   {
+
     path: '/',
+    redirect: '/home'
+  },
+  {
+    // 主页
+    path: '/home',
     name: 'home',
     component: Home
+  },
+  {
+    // 登录页
+    path: '/login',
+    // name: 'login',
+    component: Login
   }
   // {
   //   path: '/about',
