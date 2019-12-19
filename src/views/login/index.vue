@@ -62,9 +62,22 @@ export default {
   methods: {
     submitLogin () {
       // 提交登陆表单
-      this.$refs.myForm.validate(function (isOK) {
+      this.$refs.myForm.validate((isOK) => {
         if (isOK) {
           // 认为前端校验表单成功 然后发送用户名和密码到后台校验
+          this.$axios({
+            url: '/authorizations', // 请求地址
+            method: 'post',
+            data: this.loginForm
+          }).then(result => {
+            window.localStorage.setItem('user-token', result.data.data.token)// 前端缓存令牌
+            this.$router.push('/home')
+            // 成功以后才会进入到then
+          }).catch(() => {
+            this.$message({
+              message: '您的手机号或验证码不正确',
+              type: 'warning' })
+          })
         }
       })
     }
