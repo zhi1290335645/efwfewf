@@ -10,15 +10,15 @@
     <!-- 右侧 -->
     <el-col class="right" :span="4">
       <el-row  type="flex" justify="end" align="middle">
-        <img src="../../assets/avatar.jpg" >
+        <img src="!userInfo.photo ? userInfo.photo : ../../assets/avatar.jpg" >
 
         <!-- 下拉菜单 -->
-        <el-dropdown>
-          <span>不睡觉的鱼</span>
+        <el-dropdown @command="handle">
+          <span>{{ userInfo.name }}</span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>个人信息</el-dropdown-item>
-            <el-dropdown-item>git地址</el-dropdown-item>
-            <el-dropdown-item>退出</el-dropdown-item>
+            <el-dropdown-item command="info">个人信息</el-dropdown-item >
+            <el-dropdown-item command="git">git地址</el-dropdown-item>
+            <el-dropdown-item command="lgout">退出</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </el-row>
@@ -27,7 +27,38 @@
 </template>
 
 <script>
-export default {}
+export default {
+  data () {
+    return {
+      userInfo: {}, // 用户信息
+      defaultImg: require('../../assets/avatar.jpg')// 先把地址转换成变量
+    }
+  },
+  created () {
+    let token = window.localStorage.getItem('user-token')// 获取令牌
+    // 查询数据
+    this.$axios({
+      url: '/user/profile',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }).then(result => {
+      this.userInfo = result.data.data// 获取用户的个人信息
+    })
+  },
+  methods: {
+    handle (commad) {
+      // 区分点击的菜单项
+      if (commad === 'lgout') {
+        // 推出
+        window.localStorage.removeItem('user-token')// 删除用户令牌
+        this.$router.push('/login')
+      } else if (commed === 'git') {
+        window.location.href = 'https://github.com/shuiruohanyu/89heimatoutiao/commit/06a2b70ea3dd32b43a7d2cc57d3e8effb6fe04a2'
+      }
+    }
+  }
+}
 </script>
 
 <style lang='less' scoped>
