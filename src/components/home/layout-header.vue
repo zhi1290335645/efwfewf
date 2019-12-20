@@ -53,7 +53,7 @@ export default {
         // 推出
         window.localStorage.removeItem('user-token')// 删除用户令牌
         this.$router.push('/login')
-      } else if (commed === 'git') {
+      } else if (commad === 'git') {
         window.location.href = 'https://github.com/shuiruohanyu/89heimatoutiao/commit/06a2b70ea3dd32b43a7d2cc57d3e8effb6fe04a2'
       }
     }

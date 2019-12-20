@@ -4,6 +4,7 @@ import Home from '../views/home'
 import Login from '../views/login'
 import ElementUI from 'element-ui' // 引入包
 import 'element-ui/lib/theme-chalk/index.css' // 引入样式
+import Home2 from '../views/home/home'
 
 Vue.use(VueRouter)
 Vue.use(ElementUI)
@@ -17,7 +18,12 @@ const routes = [
     // 主页
     path: '/home',
     name: 'home',
-    component: Home
+    component: Home,
+    children: [{
+      path: '', // 二级路由什么都不写  作为显示组件
+      component: Home2
+    }]
+
   },
   {
     // 登录页
