@@ -3,7 +3,7 @@ import App from './App.vue'
 import './permission'
 import router from './router'
 import './styles/index.less' // 引入初始化
-import axios from 'axios'
+import axios from './utils/request'// 引入一个自己封装的axios
 import Component from './components/index'
 import ElementUI from 'element-ui'
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0'// 赋值黑马头条的默认地址

@@ -10,7 +10,8 @@
     <!-- 右侧 -->
     <el-col class="right" :span="4">
       <el-row  type="flex" justify="end" align="middle">
-        <img src="!userInfo.photo ? userInfo.photo : ../../assets/avatar.jpg" >
+        <!-- 这是一个变量的图片 -->
+        <img  :src="!userInfo.photo ? userInfo.photo : defaultImg" alt="12">
 
         <!-- 下拉菜单 -->
         <el-dropdown @command="handle">
@@ -31,19 +32,18 @@ export default {
   data () {
     return {
       userInfo: {}, // 用户信息
-      defaultImg: require('../../assets/avatar.jpg')// 先把地址转换成变量
+      defaultImg: require('../../assets/collect_select.png')// 先把地址转换成变量 然后给上边的地址使用
     }
   },
   created () {
-    let token = window.localStorage.getItem('user-token')// 获取令牌
+    // let token = window.localStorage.getItem('user-token') 获取令牌
     // 查询数据
     this.$axios({
-      url: '/user/profile',
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      url: '/user/profile'
+
     }).then(result => {
-      this.userInfo = result.data.data// 获取用户的个人信息
+      console.log(result)
+      this.userInfo = result.data// 获取用户的个人信息
     })
   },
   methods: {
@@ -54,7 +54,7 @@ export default {
         window.localStorage.removeItem('user-token')// 删除用户令牌
         this.$router.push('/login')
       } else if (commad === 'git') {
-        window.location.href = 'https://github.com/shuiruohanyu/89heimatoutiao/commit/06a2b70ea3dd32b43a7d2cc57d3e8effb6fe04a2'
+        window.location.href = 'https://github.com/zhi1290335645/efwfewf'
       }
     }
   }
