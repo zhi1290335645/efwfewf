@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import App from './App.vue'
+import './permission'
 import router from './router'
 import './styles/index.less' // 引入初始化
 import axios from 'axios'
