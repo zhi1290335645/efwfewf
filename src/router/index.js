@@ -5,7 +5,7 @@ import Login from '../views/login'
 import ElementUI from 'element-ui' // 引入包
 import 'element-ui/lib/theme-chalk/index.css' // 引入样式
 import Home2 from '../views/home/home'
-import Comment from '../views/comment'
+// import Comment from '../views/comment'
 
 Vue.use(VueRouter)
 Vue.use(ElementUI)
@@ -26,7 +26,10 @@ const routes = [
     }, {
       // 二级路由表
       path: 'comment',
-      component: Comment
+      component: () => import('../views/comment')// 按需加载
+    }, {
+      path: 'material', // 素材列表
+      component: () => import('../views/material') // 按需加载
     }]
 
   },

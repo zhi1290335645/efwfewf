@@ -1,6 +1,6 @@
 <template>
 <!-- 卡片组件 -->
-<el-card>
+<el-card v-loading="loading">
     <!-- 面包屑给了卡片的具名插槽 -->
     <bread-crumb slot="header">
       <!-- 插槽内容 -->
@@ -43,6 +43,7 @@
 export default {
   data () {
     return {
+      loading: false, // 加载状态 默认关闭
       list: [],
       page: {
         // 专门放置分页数据
@@ -61,16 +62,19 @@ export default {
     },
     // 请求评论列表数据
     getComment () {
+      this.loading = true // 打开状态
       // axios默认是get类型
       // query 参数/路由参数 地址参数 get参数 axios params
-    //   body参数给data
-    //   身份信息给 Headers
+      //   body参数给data
+      //   身份信息给 Headers
       this.$axios({
         url: '/articles',
         params: { response_type: 'comment', page: this.page.currentPage, per_page: this.page.pageSize }
       }).then(result => {
         this.list = result.data.results// 后去评论列表数据
         this.page.total = result.data.total_count // 获取文章总条数
+        // setTimeout(() => { this.loading = false }, 300)
+        this.loading = false
       })
     },
     // 定义一个转布尔值方法
