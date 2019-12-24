@@ -1,9 +1,16 @@
 <template>
-<!-- 基本的页面结构 -->
-  <el-card>
+  <!-- 基本的页面结构 -->
+  <el-card v-loading="loading">
     <bread-crumb slot="header">
       <template slot="title">素材管理</template>
     </bread-crumb>
+
+    <el-row type='flex' justify="end">
+        <el-upload action="" :http-request="uploadImg" :show-file-list="false">
+              <el-button  size="small" type="primary">点击上传</el-button>
+        </el-upload>
+    </el-row>
+
     <!-- 素材 -->
     <el-tabs v-model="activeName" @tab-click="changeTab">
       <el-tab-pane label="全部素材" name="all">
@@ -13,8 +20,9 @@
           <el-card class="img-card" v-for="item in list" :key="item.id">
             <img :src="item.url" alt />
             <el-row class="operate" type="flex" align="middle" justify="space-around">
-              <i class="el-icon-star-on"></i>
-              <i class="el-icon-delete-solid"></i>
+             <!-- v-bind:style 根据收藏状态决定 显示图标的颜色-->
+              <i @click="collectOrCancel(item)" :style="{color: item.is_collected ? 'red' : ''}" class="el-icon-star-on"></i>
+              <i @click="delMaterial(item.id)" class="el-icon-delete-solid"></i>
             </el-row>
           </el-card>
         </div>
@@ -55,6 +63,7 @@
 export default {
   data () {
     return {
+      loading: false, // 定义一个变量
       activeName: 'all', // 默认选中全部
       list: [], // 接收全部数据
       page: {
@@ -65,15 +74,63 @@ export default {
     }
   },
   methods: {
+    // 定义一个删除方法
+    delMaterial (id) {
+      this.$confirm('您确定要删除该素材吗').then(() => {
+        // 只有点击了确定 才会执行
+        // 调用删除接口
+        this.$axios({
+          url: `/user/images/${id}`,
+          method: 'delete'
+        }).then(() => {
+          // 重新拉取
+          this.getAllMaterial() // 重新加载数据
+        })
+      })
+    },
+    // 收藏或者取消收藏
+    collectOrCancel (row) {
+      // 调用 收藏或者取消收藏接口
+      this.$axios({
+        url: `/user/images/${row.id}`,
+        method: 'put',
+        data: {
+          collect: !row.is_collected // 状态取反 收藏 => 取消 取消 => 收藏
+        }
+      }).then(() => {
+        // 成功一定进入到then
+        this.getAllMaterial() // 重新加载数据
+      })
+    },
+
+    //   上传图片
+    uploadImg (params) {
+      this.loading = true // 打开进度条
+      let form = new FormData()
+      form.append('image', params.file) // 添加文件到formData
+      this.$axios({
+        method: 'post',
+        url: '/user/images',
+        data: form // formData数据
+      }).then(result => {
+        //   说明已经上传成功了一张图片
+        this.loading = false // 关闭进度条
+        this.getAllMaterial()
+      })
+    },
+
     //   切换分页
     changePage (newPage) {
       this.page.currentPage = newPage // 得到最新页码
       this.getAllMaterial()
     },
+
     //   切换tab事件
     changeTab () {
       this.page.currentPage = 1 // 应该把当前页码回到第一页 如果不重置第一页 就会直接去找不到对应页码
+      this.getAllMaterial()
     },
+
     //   获取所有素材/收藏
     getAllMaterial () {
       // all 所有 collect  收藏  this.activeName === "collect"
@@ -95,9 +152,8 @@ export default {
   }
 }
 </script>
-
 <style lang='less' scoped>
- .img-list {
+.img-list {
   display: flex;
   flex-wrap: wrap;
   .img-card {
@@ -117,6 +173,9 @@ export default {
       left: 0;
       background-color: #f4f5f6;
       height: 30px;
+      i {
+        cursor: pointer;
+      }
     }
   }
 }
