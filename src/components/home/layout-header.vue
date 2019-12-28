@@ -4,7 +4,7 @@
     <!-- 左侧 -->
     <el-col class="left" :span="6">
       <!-- 左侧图标 -->
-      <i class="el-icon-s-unfold"></i>
+      <i @click="collaspseOrOpen" :class="{'el-icon-s-unfold': collaspse,'el-icon-s-fold': !collaspse}"></i>
       <span class="title">江苏传智播客教育科技股份有限公司</span>
     </el-col>
     <!-- 右侧 -->
@@ -32,6 +32,7 @@ import eventBus from '../../utils/eventBus' // 引入公共实例
 export default {
   data () {
     return {
+      collaspse: false, // 是否折叠
       userInfo: {}, // 用户信息
       defaultImg: require('../../assets/collect_select.png')// 先把地址转换成变量 然后给上边的地址使用
     }
@@ -47,6 +48,12 @@ export default {
     })
   },
   methods: {
+    collaspseOrOpen () {
+      // 直接取反
+      this.collaspse = !this.collaspse // 直接返回
+      // 通知要改变宽度的组件
+      eventBus.$emit('changeCollapse') // 改变了折叠状态
+    },
     getUserInfo () {
       this.$axios({
         url: '/user/profile'
@@ -81,6 +88,9 @@ export default {
       color: #2c3e50;
       font-size: 16px;
     }
+    i {
+            font-size:22px;
+          }
   }
   .right {
     img {
