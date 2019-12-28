@@ -1,10 +1,10 @@
 <template>
-  <el-card>
+  <el-card v-loading="loading">
       <bread-crumb slot='header'>
          <template slot='title'>账户信息</template>
       </bread-crumb>
       <!-- 放置上传组件 -->
-      <el-upload class='head-upload' action="" :show-file-list="false">
+      <el-upload :http-request="uploadImg" class='head-upload' action="" :show-file-list="false">
           <img :src="formData.photo ? formData.photo : defaultImg" alt="">
       </el-upload>
       <!-- 放置组件 -->
@@ -32,6 +32,7 @@
 export default {
   data () {
     return {
+      loading: false,
       // 定义一个表单数据对象
       formData: {
         name: '', // 用户名
@@ -54,6 +55,20 @@ export default {
     }
   },
   methods: {
+    // 上传图片
+    uploadImg (params) {
+      this.loading = true// 打开弹层
+      let data = new FormData()// 实例化对象
+      data.append('photo', params.file)// 加入参数
+      this.$axios({
+        url: 'user/photo',
+        method: 'patch',
+        data
+      }).then(result => {
+        this.formData.photo = result.data.photo// 设置头像地址
+        this.loading = false// 关掉弹层
+      })
+    },
     //   获取用户信息
     getUserInfo () {
       this.$axios({
@@ -62,21 +77,21 @@ export default {
         this.formData = result.data
       })
     },
-    // baocunyonghuxinxi
+    // baocunyonghuxin
     // sucaiGuanli
     saveUserInfo () {
       // 要去校验表单数据是否OK
       this.$refs.myForm.validate((isOK) => {
-        // 第哦啊用保存方法
+        //   调用保存方法
         if (isOK) {
           this.$axios({
-            url: '/user.porfile',
+            url: '/user/profile',
             method: 'patch',
             data: this.formData
           }).then(result => {
-            // 认为保存成功
+            //   认为保存成功
             this.$message({
-              type: 'syccess',
+              type: 'success',
               message: '保存信息成功'
             })
           })
